@@ -3,8 +3,7 @@
 ## 📚 Complete Step-by-Step Implementation
 
 **Duration**: 3-4 hours  
-**Difficulty**: Intermediate-Advanced  
-**Status**: Part 1 Complete ✅
+**Difficulty**: Intermediate-Advanced
 
 ---
 
@@ -18,15 +17,76 @@ This exercise teaches you how to use **One-Class SVM** to detect anomalous datab
 
 ---
 
+## 🔐 Problem Description
+
+### The Security Challenge
+
+Database administrators have privileged access to an organization's most sensitive data—customer information, financial records, system configurations, and audit logs. While this access is necessary for their roles, it also creates significant security risks:
+
+**Threat Scenarios:**
+1. **Credential Compromise**: Attacker steals admin credentials through phishing, malware, or social engineering
+2. **Insider Threat**: Malicious employee abuses legitimate access to steal data or cause damage
+3. **Account Takeover**: External attacker gains unauthorized access and mimics normal behavior
+4. **Lateral Movement**: Compromised low-privilege account escalates to admin access
+
+**Why Traditional Security Fails:**
+- **Rule-based systems** can't catch novel attack patterns or subtle behavioral changes
+- **Signature detection** requires known attack signatures (useless for zero-day threats)
+- **Threshold alerts** (e.g., "more than 100 queries") are easily evaded by sophisticated attackers
+- **Manual review** of millions of database queries is operationally infeasible
+
+### The Machine Learning Solution
+
+We use **One-Class SVM** (Support Vector Machine) for **anomaly detection** because:
+
+✅ **Learns normal behavior**: Trains only on legitimate admin activity (no attack examples needed)  
+✅ **Personalized models**: Each admin has unique access patterns—one model per user  
+✅ **Detects unknown attacks**: Flags deviations from normal, regardless of attack type  
+✅ **Handles high-dimensional data**: Works with 20+ behavioral features (query types, timing, volume, sensitivity)
+
+**How It Works:**
+1. **Training Phase**: Learn decision boundary around normal admin behavior using only baseline data
+2. **Detection Phase**: Score new database queries—inside boundary = normal, outside = anomaly
+3. **Alert Tier**: Classify anomalies by confidence (Critical/High/Medium/Low) based on distance from boundary
+4. **Investigation**: Security analysts review flagged activities using structured playbooks
+
+### Real-World Context
+
+**Scenario**: Enterprise with 3 database administrators:
+- **Alice** (Data Analyst): Runs reports, queries customer/transaction data during business hours
+- **Bob** (System Admin): Maintains systems, accesses audit logs and config, works extended hours
+- **Charlie** (Developer): Tests code, uses complex JOINs on product/order data, flexible schedule
+
+**Attack Simulation**: After 28 days of normal activity, we inject realistic attacks:
+- **Day 29, Alice account**: Reconnaissance attack (systematic SELECT * queries across all tables)
+- **Day 29, Bob account**: Mass data extraction (10-20× normal row counts from sensitive tables)
+- **Day 29, Charlie account**: Credential theft (unusual 3 AM access to atypical tables)
+
+**Detection Goal**: Identify attacks with high recall (catch most attacks) while maintaining low false positive rate (minimize alert fatigue for analysts).
+
+### What You'll Build
+
+This 5-part exercise walks through the complete machine learning security pipeline:
+
+1. **Data Generation**: Create realistic database access logs with normal behavior + attacks
+2. **Feature Engineering**: Extract 24 behavioral features (query patterns, timing, table access, resource usage)
+3. **Model Training**: Train personalized One-Class SVM models (Linear vs RBF kernels) per admin
+4. **Attack Detection**: Evaluate detection performance with ROC/PR curves, confusion matrices, error analysis
+5. **Operational Deployment**: Design tiered alert workflow, investigation playbooks, model lifecycle management
+
+**Learning Outcomes**: Understand anomaly detection theory, apply One-Class SVM to security problems, balance detection vs false positives, design operational ML systems for SOC (Security Operations Center) environments.
+
+---
+
 ## 📂 Project Structure
 
 ```
 Exercise_8_4B_Database_Anomaly_Detection/
-├── Part1_Data_Generation.ipynb          ✅ COMPLETE
-├── Part2_Feature_Engineering.ipynb      ⏳ NEXT
-├── Part3_OneClass_SVM_Training.ipynb    📋 TODO
-├── Part4_Attack_Detection.ipynb         📋 TODO
-├── Part5_Operational_Deployment.ipynb   📋 TODO
+├── Part1_Data_Generation.ipynb
+├── Part2_Feature_Engineering.ipynb
+├── Part3_OneClass_SVM_Training.ipynb
+├── Part4_Attack_Detection.ipynb
+├── Part5_Operational_Deployment.ipynb
 ├── data/
 │   ├── baseline_logs.csv
 │   ├── attack_logs.csv
@@ -40,9 +100,9 @@ Exercise_8_4B_Database_Anomaly_Detection/
 
 ---
 
-## ✅ Part 1: Data Generation (COMPLETE)
+## 📋 Part 1: Data Generation
 
-**What You Built:**
+**What You'll Build:**
 - Realistic synthetic database access logs
 - 28 days of normal baseline data (3 administrators)
 - 3 attack scenarios injected
@@ -75,110 +135,113 @@ Exercise_8_4B_Database_Anomaly_Detection/
 
 ---
 
-## ⏳ Part 2: Feature Engineering (NEXT STEP)
+## 📋 Part 2: Feature Engineering
 
 **What You'll Build:**
 
-### Phase 1: Per-Query Features (30 min)
+### Phase 1: Per-Query Features
 Extract features from each database query:
 - Query complexity metrics
 - Table access patterns
 - Temporal features
 - Resource consumption
 
-### Phase 2: Aggregated Behavioral Features (30 min)
+### Phase 2: Aggregated Behavioral Features
 Aggregate per-admin over time windows (daily):
 - Query type distribution
 - Table access frequency
 - Timing patterns
 - Anomaly indicators
 
-### Phase 3: Feature Normalization (15 min)
+### Phase 3: Feature Normalization
 Prepare features for One-Class SVM:
 - StandardScaler for consistent scales
 - Handle missing values
 - Create training/test splits
 
 **Expected Output:**
-- `data/features_alice.csv`
-- `data/features_bob.csv`
-- `data/features_charlie.csv`
+- `data/features_train_admin_alice.csv`
+- `data/features_train_admin_bob.csv`
+- `data/features_train_admin_charlie.csv`
+- `data/features_test_admin_*.csv`
 - Feature correlation matrix
 - Feature distribution plots
 
 ---
 
-## 📋 Part 3: One-Class SVM Training (TODO)
+## 📋 Part 3: One-Class SVM Training
 
 **What You'll Build:**
 
-### Phase 1: Baseline Model Training (30 min)
+### Phase 1: Baseline Model Training
 - Train One-Class SVM per administrator on normal data
-- Try both Linear and RBF kernels
+- Compare Linear and RBF kernels
 - Tune `nu` parameter (expected anomaly fraction)
 
-### Phase 2: Model Evaluation (30 min)
+### Phase 2: Model Evaluation
 - Analyze support vectors
 - Validate on held-out normal data
 - Check false positive rate on known-good queries
 
 **Expected Output:**
-- `models/ocsvm_alice.pkl`
-- `models/ocsvm_bob.pkl`
-- `models/ocsvm_charlie.pkl`
+- `models/oneclass_svm_admin_alice.pkl`
+- `models/oneclass_svm_admin_bob.pkl`
+- `models/oneclass_svm_admin_charlie.pkl`
+- `models/model_configs.json`
 - Training metrics report
 
 ---
 
-## 📋 Part 4: Attack Detection (TODO)
+## 📋 Part 4: Attack Detection
 
 **What You'll Build:**
 
-### Phase 1: Score Attack Scenarios (30 min)
+### Phase 1: Score Attack Scenarios
 - Score attack logs with trained models
 - Analyze anomaly scores
 - Compare to normal baseline scores
 
-### Phase 2: Performance Evaluation (30 min)
+### Phase 2: Performance Evaluation
 - Compute TPR, FPR, Precision, Recall
-- ROC curves per admin
-- Confusion matrices
+- Generate ROC curves per admin
+- Create confusion matrices
 
-### Phase 3: False Positive Analysis (30 min)
+### Phase 3: False Positive Analysis
 - Investigate false positives
 - Understand model limitations
 - Document edge cases
 
 **Expected Output:**
-- Detection performance report
-- ROC/PR curves
-- False positive analysis document
+- `results/detection_performance_report.csv`
+- `results/roc_curves.png`
+- `results/precision_recall_curves.png`
+- `results/confusion_matrices.png`
 
 ---
 
-## 📋 Part 5: Operational Deployment (TODO)
+## 📋 Part 5: Operational Deployment
 
 **What You'll Build:**
 
-### Phase 1: Alert Workflow Design (30 min)
-- High/Medium/Low confidence tiers
-- Automated response actions
-- Analyst investigation procedures
+### Phase 1: Alert Workflow Design
+- Define High/Medium/Low/Critical confidence tiers
+- Design automated response actions
+- Create analyst investigation procedures
 
-### Phase 2: Monitoring Dashboard (30 min)
-- Real-time anomaly feed
-- Alert prioritization
-- Historical trend analysis
+### Phase 2: Monitoring Dashboard
+- Design real-time anomaly feed
+- Implement alert prioritization
+- Plan historical trend analysis
 
-### Phase 3: Model Lifecycle (15 min)
-- Retraining procedures
-- Drift detection
-- Feedback incorporation
+### Phase 3: Model Lifecycle
+- Define retraining procedures
+- Design drift detection strategy
+- Plan feedback incorporation
 
 **Expected Output:**
-- Operational playbook
-- Alert workflow diagram
-- Deployment architecture
+- `results/investigation_playbook.txt`
+- Alert workflow definitions
+- Deployment architecture recommendations
 
 ---
 
@@ -283,24 +346,13 @@ pip install scikit-learn
 
 ---
 
-## 📝 Progress Tracker
+## 🎓 How to Complete This Exercise
 
-- [x] Part 1: Data Generation ✅
-- [ ] Part 2: Feature Engineering ⏳ 
-- [ ] Part 3: One-Class SVM Training 📋
-- [ ] Part 4: Attack Detection 📋
-- [ ] Part 5: Operational Deployment 📋
-
-**Total Progress**: 20% Complete
-
----
-
-## 🎓 Next Steps
-
-1. **Open** `Part1_Data_Generation.ipynb`
-2. **Run** all cells to generate data
-3. **Verify** data files created in `data/` directory
-4. **Move to** `Part2_Feature_Engineering.ipynb` (coming next)
+1. **Start with** `Part1_Data_Generation.ipynb` to create synthetic database logs
+2. **Continue to** `Part2_Feature_Engineering.ipynb` to extract behavioral features
+3. **Train models in** `Part3_OneClass_SVM_Training.ipynb` with different kernels
+4. **Evaluate detection in** `Part4_Attack_Detection.ipynb` with ROC/PR analysis
+5. **Design deployment in** `Part5_Operational_Deployment.ipynb` for production use
 
 ---
 
