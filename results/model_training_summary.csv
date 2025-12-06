@@ -1,0 +1,4 @@
+Administrator,Kernel,Nu,Training Samples,Features,Support Vectors,SV %,Training Anomaly Rate,Score Mean,Score Std
+admin_alice,linear,0.05,28,23,24,85.7%,50.0%,0.000,0.000
+admin_bob,rbf,0.1,28,23,13,46.4%,17.9%,0.020,0.028
+admin_charlie,rbf,0.05,28,23,18,64.3%,32.1%,0.012,0.018

@@ -1,0 +1,19 @@
+{
+  "total_logs": 1939,
+  "normal_logs": 1913,
+  "attack_logs": 26,
+  "administrators": [
+    "admin_alice",
+    "admin_bob",
+    "admin_charlie"
+  ],
+  "attack_types": [
+    "reconnaissance",
+    "mass_extraction",
+    "credential_theft"
+  ],
+  "date_range": {
+    "start": "2024-01-01 07:02:17",
+    "end": "2024-01-30 04:50:00"
+  }
+}

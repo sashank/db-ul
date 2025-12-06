@@ -1,0 +1,56 @@
+ANALYST INVESTIGATION PLAYBOOK
+Database Access Anomaly Detection - One-Class SVM
+====================================================================================================
+
+Phase 1: Initial Triage (< 5 min):
+  1. Review alert severity and anomaly score
+  2. Identify affected user and timestamp
+  3. Check if user is currently active
+  4. Review recent queries from this user (last 1 hour)
+
+Phase 2: Behavioral Analysis (< 15 min):
+  5. Compare to user's historical baseline:
+     • Query volume (normal range?)
+     • Time of day (typical hours?)
+     • Tables accessed (usual data?)
+     • Query complexity (standard patterns?)
+  6. Check feature deviations:
+     • Rows returned (10× normal?)
+     • Sensitive tables (PII, config)?
+     • Late-night/weekend activity?
+  7. Review query semantics:
+     • SELECT * without WHERE? (reconnaissance)
+     • Mass data extraction?
+     • Configuration changes?
+
+Phase 3: Context Gathering (< 20 min):
+  8. Check for legitimate business reasons:
+     • Scheduled reports or data exports?
+     • Recent role changes or projects?
+     • Approved maintenance windows?
+  9. Correlate with other security signals:
+     • Failed login attempts?
+     • VPN connections from unusual locations?
+     • Other SIEM alerts for this user?
+  10. Check account compromise indicators:
+      • Multiple simultaneous sessions?
+      • Impossible travel (location mismatch)?
+      • User reported suspicious activity?
+
+Phase 4: Decision & Response (< 30 min):
+  11. Classification decision:
+      [ ] TRUE POSITIVE: Confirmed attack → Escalate to incident response
+      [ ] FALSE POSITIVE: Legitimate activity → Close alert + Update baseline
+      [ ] UNCERTAIN: Needs more investigation → Escalate to senior analyst
+  12. If TRUE POSITIVE, execute response:
+      • Terminate active database sessions
+      • Disable user account (temporary)
+      • Contact user/manager for verification
+      • Review audit logs for data exfiltration
+      • Check backup/recovery options
+      • Document findings in incident ticket
+  13. If FALSE POSITIVE, document and tune:
+      • Add to analyst feedback dataset
+      • Update user baseline if behavior changed
+      • Consider adjusting alert threshold
+

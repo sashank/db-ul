@@ -1,0 +1,14 @@
+{
+  "admin_alice": {
+    "kernel": "linear",
+    "nu": 0.05
+  },
+  "admin_bob": {
+    "kernel": "rbf",
+    "nu": 0.1
+  },
+  "admin_charlie": {
+    "kernel": "rbf",
+    "nu": 0.05
+  }
+}
